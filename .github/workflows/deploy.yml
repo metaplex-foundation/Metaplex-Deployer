@@ -24,7 +24,7 @@ jobs:
       - name: Prepare Outputs
         id: prepare-step
         run: |
-          echo "PROGRAM_RPC=${{inputs.PROGRAM_NAME.uppercase}}_RPC_URL" >> $GITHUB_ENV
+          echo "PROGRAM_RPC=${{inputs.PROGRAM_NAME}}_RPC_URL" >> $GITHUB_ENV
 
   trigger-deploy:
     name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
