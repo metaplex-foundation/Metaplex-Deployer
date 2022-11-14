@@ -21,21 +21,19 @@ jobs:
     name: Prepare
     runs-on: ubuntu-20.04
     steps:
+      - id: program_name
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ inputs.PROGRAM_NAME }}
       - name: Prepare Outputs
         id: prepare-step
-        # Sets this step's outputs, that later on will be exported as the job's outputs
         run: |
-          echo "::set-output name=program_rpc_url::${{inputs.PROGRAM_NAME.uppercase}}_RPC_URL";
-    # Sets this job's, that will be consumed by other jobs
-    outputs:
-      program_rpc_url: ${{ steps.prepare-step.outputs.program_rpc_url }}
+          echo "${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $PROGRAM_RPC_URL
 
   trigger-deploy:
     name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
     runs-on: ubuntu-latest
     environment: ${{inputs.DEPLOY_ENV}}
-    env:
-      PROGRAM_RPC_URL: ${{ needs.prepare.outputs.program_rpc_url }}
     steps:
       - name: Emit repository_dispatch
         uses: mvasigh/dispatch-action@main
