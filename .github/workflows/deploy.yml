@@ -25,7 +25,7 @@ jobs:
         id: prepare-step
         # Sets this step's outputs, that later on will be exported as the job's outputs
         run: |
-          echo "::set-output name=program_rpc_url::${{inputs.PROGRAM_NAME}}_RPC_URL";
+          echo "::set-output name=program_rpc_url::${{inputs.PROGRAM_NAME.uppercase}}_RPC_URL";
     # Sets this job's, that will be consumed by other jobs
     outputs:
       program_rpc_url: ${{ steps.prepare-step.outputs.program_rpc_url }}
