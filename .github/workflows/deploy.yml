@@ -21,10 +21,14 @@ jobs:
     name: Prepare
     runs-on: ubuntu-20.04
     steps:
+      - id: program_name
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{inputs.PROGRAM_NAME}}
       - name: Prepare Outputs
         id: prepare-step
         run: |
-          echo "PROGRAM_RPC=${{inputs.PROGRAM_NAME}}_RPC_URL" >> $GITHUB_ENV
+          echo "PROGRAM_RPC=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
 
   trigger-deploy:
     name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
