@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      DEPLOY_ENV:
+        description: "The environment to deploy (testnet / devnet / mainnet)"
+        default: "devnet"
+      PROGRAM_NAME:
+        description: ""
+        default: "helloworld"
+      PROGRAM_COMMIT:
+        description: ""
+        default: "017db45c25e06d6b5f265b48b61b9c64a00e6fc6"
+      VERSION:
+        description: ""
+        default: ""
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Prepare Outputs
+        id: prepare-step
+        # Sets this step's outputs, that later on will be exported as the job's outputs
+        run: |
+          echo "::set-output name=program_rpc_url::${{inputs.PROGRAM_NAME}}_RPC_URL";
+    # Sets this job's, that will be consumed by other jobs
+    outputs:
+      program_rpc_url: ${{ steps.prepare-step.outputs.program_rpc_url }}
+
+  trigger-deploy:
+    name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
+    runs-on: ubuntu-latest
+    environment: ${{inputs.DEPLOY_ENV}}
+    env:
+      PROGRAM_RPC_URL: ${{ needs.prepare.outputs.program_rpc_url }}
+    steps:
+      - name: Emit repository_dispatch
+        uses: mvasigh/dispatch-action@main
+        with:
+          token: ${{ secrets.DEPLOYER_PAT }}
+          repo: Deployer-Dispatch
+          owner: metaplex-foundation
+          event_type: deploy_trigger
+          message: |
+            {
+              "RPC_URL":"${{ secrets[env.PROGRAM_RPC_URL] }}"
+            }
