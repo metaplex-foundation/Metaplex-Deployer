@@ -46,5 +46,8 @@ jobs:
           event_type: deploy_trigger
           message: |
             {
-              "RPC_URL":"${{ secrets[env.PROGRAM_RPC_URL] }}"
+              "RPC_URL":"${{ secrets[env.PROGRAM_RPC_URL] }}",
+              "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}",
+              "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
+              "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
             }
