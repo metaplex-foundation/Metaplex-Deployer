@@ -25,7 +25,7 @@ jobs:
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{inputs.PROGRAM_NAME}}
-      - name: Prepare Outputs
+      - name: Set Env Vars
         id: prepare-step
         run: |
           echo "PROGRAM_RPC=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{inputs.DEPLOY_ENV}}
     steps:
-      - name: Emit repository_dispatch
+      - name: Trigger Deployer-Dispatch Job
         uses: mvasigh/dispatch-action@main
         with:
           token: ${{ secrets.DEPLOYER_PAT }}
@@ -44,7 +44,7 @@ jobs:
           event_type: deploy_trigger
           message: |
             {
-              "RPC_URL":"${{ secrets[env.PROGRAM_RPC] }}",
+              "PROGRAM_RPC_URL":"${{ secrets[env.PROGRAM_RPC] }}",
               "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}",
               "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
               "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
