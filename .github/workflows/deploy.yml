@@ -50,4 +50,4 @@ jobs:
               "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
             }
       - name: echo
-        run: echo ${{ env.program_rpc }}
+        run: echo "${{ env.program_rpc }}"
