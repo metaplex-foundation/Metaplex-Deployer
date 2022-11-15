@@ -44,5 +44,9 @@ jobs:
               "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
               "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
             }
-      - name: echo
-        run: echo "$GITHUB_CONTEXT"
+      - name: Deploy Parameters
+        id: deploy_parameters
+        run: |
+          echo "PROGRAM_NAME: ${{ inputs.PROGRAM_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "PROGRAM_COMMIT: ${{ inputs.PROGRAM_COMMIT }}" >> $GITHUB_STEP_SUMMARY
+          echo "DEPLOY_ENV: ${{ inputs.DEPLOY_ENV }}" >> $GITHUB_STEP_SUMMARY
