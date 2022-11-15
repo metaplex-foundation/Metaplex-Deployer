@@ -28,7 +28,7 @@ jobs:
       - name: Set Env Vars
         id: prepare-step
         run: |
-          echo "PROGRAM_RPC=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
+          echo "program_rpc=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
 
   trigger-deploy:
     name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
@@ -44,8 +44,10 @@ jobs:
           event_type: deploy_trigger
           message: |
             {
-              "PROGRAM_RPC_URL":"${{ secrets[env.PROGRAM_RPC] }}",
+              "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}",
               "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}",
               "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
               "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
             }
+      - name: echo
+        run: echo ${{ env.program_rpc }}
