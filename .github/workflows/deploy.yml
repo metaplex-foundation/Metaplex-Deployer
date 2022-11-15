@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{inputs.DEPLOY_ENV}}
     steps:
-      - id: Set program_name
+      - id: set-program
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{inputs.PROGRAM_NAME}}
