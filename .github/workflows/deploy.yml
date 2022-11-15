@@ -17,24 +17,19 @@ on:
         default: ""
 
 jobs:
-  prepare:
-    name: Prepare
-    runs-on: ubuntu-20.04
-    steps:
-      - id: program_name
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ${{inputs.PROGRAM_NAME}}
-      - name: Set Env Vars
-        id: prepare-step
-        run: |
-          echo "program_rpc=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
-
   trigger-deploy:
     name: "${{inputs.PROGRAM_NAME}}-${{inputs.DEPLOY_ENV}} Deploy"
     runs-on: ubuntu-latest
     environment: ${{inputs.DEPLOY_ENV}}
     steps:
+      - id: Set program_name
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{inputs.PROGRAM_NAME}}
+      - name: Set Env Vars
+        id: set-envs
+        run: |
+          echo "program_rpc=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV   
       - name: Trigger Deployer-Dispatch Job
         uses: mvasigh/dispatch-action@main
         with:
@@ -50,4 +45,4 @@ jobs:
               "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
             }
       - name: echo
-        run: echo "${{ env.program_rpc }}"
+        run: echo "$GITHUB_CONTEXT"
