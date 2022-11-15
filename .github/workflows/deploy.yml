@@ -22,14 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{inputs.DEPLOY_ENV}}
     steps:
-      - id: set-program
+      - id: program-name
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{inputs.PROGRAM_NAME}}
       - name: Set Env Vars
         id: set-envs
         run: |
-          echo "program_rpc=${{ steps.program_name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV   
+          echo "program_rpc=${{ steps.program-name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV   
       - name: Trigger Deployer-Dispatch Job
         uses: mvasigh/dispatch-action@main
         with:
