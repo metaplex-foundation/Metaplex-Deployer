@@ -32,6 +32,7 @@ jobs:
           echo "program_rpc=${{ steps.program-name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
 
       - name: Dispatch Deploy to Deployer-Dispatch
+        uses: actions/github-script@v6
         id: Deployer-Dispatch
         with:
           result-encoding: string
