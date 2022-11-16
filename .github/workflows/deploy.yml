@@ -52,15 +52,6 @@ jobs:
               }
             });
 
-      - name: RESPONSE WIP
-        if: github.event.action == 'Deployer Response'
-        run: |
-          echo "RESPONSE received from '${{ github.event.client_payload.repository }}'"
-          curl -X POST https://api.github.com/repos/metaplex-foundation/Deployer-Dispatch/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.DEPLOYER_PAT }} \
-          --data '{"event_type": "Start Deployment", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
-
       - name: Deploy Parameters
         id: deploy_parameters
         run: |
