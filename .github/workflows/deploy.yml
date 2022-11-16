@@ -40,7 +40,7 @@ jobs:
           script: |
             github.rest.repos.createDispatchEvent({
               owner: "metaplex-foundation",
-              repository: "Deployer-Dispatch",
+              repo: "Deployer-Dispatch",
               event_type: "deploy_trigger",
               client_payload: {
                 "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}",
