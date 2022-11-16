@@ -35,6 +35,7 @@ jobs:
         uses: actions/github-script@v6
         id: Deployer-Dispatch
         with:
+          github-token: ${{ secrets.DEPLOYER_PAT }}
           result-encoding: string
           retries: 3
           script: |
