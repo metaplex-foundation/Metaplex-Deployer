@@ -29,21 +29,40 @@ jobs:
       - name: Set Env Vars
         id: set-envs
         run: |
-          echo "program_rpc=${{ steps.program-name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV   
-      - name: Trigger Deployer-Dispatch Job
-        uses: mvasigh/dispatch-action@main
-        with:
-          token: ${{ secrets.DEPLOYER_PAT }}
-          repo: Deployer-Dispatch
-          owner: metaplex-foundation
-          event_type: deploy_trigger
-          message: |
-            {
-              "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}",
-              "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}",
-              "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
-              "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
-            }
+          echo "program_rpc=${{ steps.program-name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
+
+#      - name: Trigger Deployer-Dispatch Job
+#        uses: mvasigh/dispatch-action@main
+#        with:
+#          token: ${{ secrets.DEPLOYER_PAT }}
+#          repo: Deployer-Dispatch
+#          owner: metaplex-foundation
+#          event_type: deploy_trigger
+#          message: |
+#            {
+#              "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}",
+#              "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}",
+#              "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}",
+#              "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}"
+#            }
+
+      - name: INIT WORKFLOW - Dispatch init event to REMOTE repository
+        if: github.event.action != 'Deployer Workflow Response'
+        run: |
+          curl -X POST https://api.github.com/repos/metaplex-foundation/Deployer-Dispatch/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.DEPLOYER_PAT }} \
+          --data '{"event_type": "Start Deployment", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}", "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}", "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}", "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}" }}'
+      - name: RESPONSE - Response event from REMOTE repository
+        if: github.event.action == 'Deployer Workflow Response'
+        run: |
+          echo "RESPONSE received from '${{ github.event.client_payload.repository }}'"
+          curl -X POST https://api.github.com/repos/metaplex-foundation/Deployer-Dispatch/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.DEPLOYER_PAT }} \
+          --data '{"event_type": "Start Deployment", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}", "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}", "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}", "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}" }}'
+
+
       - name: Deploy Parameters
         id: deploy_parameters
         run: |
