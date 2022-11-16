@@ -1,6 +1,7 @@
 name: Program Deploy
 
 on:
+  repository_dispatch:
   workflow_dispatch:
     inputs:
       DEPLOY_ENV:
@@ -51,7 +52,7 @@ jobs:
               }
             });
 
-      - name: RESPONSE - Response event from REMOTE repository
+      - name: RESPONSE WIP
         if: github.event.action == 'Deployer Response'
         run: |
           echo "RESPONSE received from '${{ github.event.client_payload.repository }}'"
