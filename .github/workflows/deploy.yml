@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "program_rpc=${{ steps.program-name.outputs.uppercase }}_RPC_URL" >> $GITHUB_ENV
 
-      - name: Dispatch Deploy to Deployer-Dispatch
+      - name: Dispatch Deploy
         uses: actions/github-script@v6
         id: Deployer-Dispatch
         with:
@@ -52,13 +52,13 @@ jobs:
             });
 
       - name: RESPONSE - Response event from REMOTE repository
-        if: github.event.action == 'Deployer Workflow Response'
+        if: github.event.action == 'Deployer Response'
         run: |
           echo "RESPONSE received from '${{ github.event.client_payload.repository }}'"
           curl -X POST https://api.github.com/repos/metaplex-foundation/Deployer-Dispatch/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.DEPLOYER_PAT }} \
-          --data '{"event_type": "Start Deployment", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "PROGRAM_RPC_URL":"${{ secrets[env.program_rpc] }}", "PROGRAM_NAME":"${{ inputs.PROGRAM_NAME }}", "PROGRAM_COMMIT":"${{ inputs.PROGRAM_COMMIT }}", "DEPLOY_ENV":"${{ inputs.DEPLOY_ENV }}" }}'
+          --data '{"event_type": "Start Deployment", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
 
       - name: Deploy Parameters
         id: deploy_parameters
